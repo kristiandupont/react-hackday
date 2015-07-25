@@ -7,6 +7,7 @@ var building = require("./building");
 var BrowserSystem = require('./browserSystem');
 var PersistenceSystem = require("./persistenceSystem");
 var _ = require('lodash');
+var Promise = require("bluebird");
 
 app.use('/', express.static(path.join(__dirname, 'static')));
 
@@ -27,18 +28,16 @@ io.on('connection', function(socket){
     command.client = socket.id;
     var events = [];
     buildingState = building.consume(command, events, buildingState);
-
-    _.each(systems, function (system) { system.process(events); })
-
-    // ToDo: process events
     console.log(events);
+
+    var promises = _.map(systems, function (system) { 
+      return system.processing(events); 
+    });
+    Promise.all(promises).then(function () { console.log("Done"); });
+
     // console.dir(JSON.stringify(buildingState))
   });
 
-  //socket.on("pubsub", function (command) {
-  //  command.client = socket;
-  //
-  //});
 });
 
 http.listen(3000, function(){

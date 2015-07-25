@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var Promise = require("bluebird");
 
 function BrowserSystem () {
   this.sockets = {};
@@ -8,7 +9,8 @@ BrowserSystem.prototype.addBrowser = function (socket) {
   this.sockets[socket.id] = socket;
 }
 
-BrowserSystem.prototype.process = function (events) {
+BrowserSystem.prototype.processing = function (events) {
+  
   _.each(events, function (event) {
     switch(event.target) {
       case 'browser':
@@ -18,6 +20,8 @@ BrowserSystem.prototype.process = function (events) {
         break;
     }
   }.bind(this));
+
+  return Promise.resolve();
 }
 
 
