@@ -3,19 +3,21 @@ var path = require("path");
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var room = require('./room');
+//var room = require('./room');
+var building = require("./building");
 
 app.use('/', express.static(path.join(__dirname, 'static')));
 
-var roomState = room.initialState();
+var buildingState = building.initialState();
+//var roomState = room.initialState();
 
 io.on('connection', function(socket){
   console.log('a user connected');
 
   socket.on("command", function (command) {
     command.client = socket.id;
-    roomState = room.consume(command, roomState);
-    console.log(roomState)
+    buildingState = building.consume(command, buildingState);
+    console.log(buildingState)
   });
 });
 
