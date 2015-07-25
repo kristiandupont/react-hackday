@@ -8,6 +8,10 @@ app.use('/', express.static(path.join(__dirname, 'static')));
 
 io.on('connection', function(socket){
   console.log('a user connected');
+
+  socket.on("chat-message", function (m) {
+    console.log("Chat: ", m);
+  });
 });
 
 http.listen(3000, function(){
