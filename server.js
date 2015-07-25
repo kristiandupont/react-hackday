@@ -6,13 +6,14 @@ var io = require('socket.io')(http);
 var building = require("./building");
 var BrowserSystem = require('./browserSystem');
 var PersistenceSystem = require("./persistenceSystem");
-var redis = require("redis");
+var redis = require("fakeredis");
 var _ = require('lodash');
 var Promise = require("bluebird");
+var promisifyRedis = require('./promisifyRedis');
 
 app.use('/', express.static(path.join(__dirname, 'static')));
 
-var redisCx = redis.createClient();
+var redisCx = promisifyRedis(redis.createClient());
 
 var browserSystem = BrowserSystem.create(redisCx);
 var persistenceSystem = PersistenceSystem.create(redisCx);
@@ -20,11 +21,9 @@ var persistenceSystem = PersistenceSystem.create(redisCx);
 var systems = [ browserSystem, persistenceSystem ]
 
 var buildingState = building.initialState();
-//var roomState = room.initialState();
 
 io.on('connection', function(socket){
   browserSystem.addBrowser(socket);
-  // clients[socket.id] = socket;
   console.log('a user connected');
 
   socket.on("command", function (command) {

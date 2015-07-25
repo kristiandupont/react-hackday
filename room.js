@@ -3,7 +3,6 @@ var _ = require('lodash');
 function initialState (roomId) {
   return {
     id: roomId,
-    messages: [],
     clients: []
   };
 }
@@ -24,16 +23,12 @@ function consume (action, events, state) {
         events.push({
           target: "db",
           name: "message",
-          message: message 
+          message: message
         });
 
-        return _.extend({}, state, {
-          messages: state.messages.concat(message)
-        });
-
-      } else {
-        return state;
       }
+
+      return state;
       break;
 
     case 'join-room':

@@ -11,20 +11,13 @@ BrowserSystem.prototype.addBrowser = function (socket) {
 }
 
 function gettingBrowserEvent(redisCx, event) {
-  return new Promise(function (resolve, reject) {
-    if (event.name === "message-list") {
-      redisCx.lrange("messages:" + event.roomId, 0, -1, function (err, data) {
-        if (err) {
-          reject();
-        } else {
-          var e = _.extend({}, event, { messages: _.map(data, JSON.parse) });
-          resolve(e);
-        }
-      });
-    } else {
-      return Promise.resolve(event);
-    }
-  });
+  if (event.name === "message-list") {
+    return redisCx.lranging("messages:" + event.roomId, 0, -1).then(function (data) {
+      return _.extend({}, event, { messages: _.map(data, JSON.parse) });
+    });
+  } else {
+    return Promise.resolve(event);
+  }
 }
 
 BrowserSystem.prototype.processing = function (events) {

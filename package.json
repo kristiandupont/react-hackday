@@ -15,5 +15,8 @@
     "react": "^0.13.3",
     "redis": "^0.12.1",
     "socket.io": "^1.3.6"
+  },
+  "devDependencies": {
+    "fakeredis": "^0.3.1"
   }
 }
