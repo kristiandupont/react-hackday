@@ -41,7 +41,7 @@ function consume (action, events, state) {
 
         events.push({
           target: "browser",
-          client: action.client,
+          clients: [action.client],
           name: "message-list",
           roomId: action.roomId
         });
