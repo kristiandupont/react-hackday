@@ -12,16 +12,23 @@ function consume (action, events, state) {
   switch(action.type) {
     case 'add-message':
       if (action.roomId === state.id) {
+        var message = _.pick(action, ['roomId', 'client', 'message'])
 
         events.push({
           target: 'browser',
           clients: _.difference(state.clients, [action.client]),
           name: 'message',
-          message: action.message
+          message: message
+        });
+
+        events.push({
+          target: "db",
+          name: "message",
+          message: message 
         });
 
         return _.extend({}, state, {
-          messages: state.messages.concat(_.pick(action, ['client', 'message']))
+          messages: state.messages.concat(message)
         });
 
       } else {

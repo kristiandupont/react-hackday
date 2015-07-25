@@ -3,18 +3,17 @@ var path = require("path");
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-// var redis = require("redis");
 var building = require("./building");
 var BrowserSystem = require('./browserSystem');
+var PersistenceSystem = require("./persistenceSystem");
 var _ = require('lodash');
 
 app.use('/', express.static(path.join(__dirname, 'static')));
-// var redisCx = redis.createClient();
 
 var browserSystem = BrowserSystem.create();
+var persistenceSystem = PersistenceSystem.create();
 
-var systems = [ browserSystem ]
-
+var systems = [ browserSystem, persistenceSystem ]
 
 var buildingState = building.initialState();
 //var roomState = room.initialState();
