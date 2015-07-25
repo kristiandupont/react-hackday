@@ -3,13 +3,12 @@ var path = require("path");
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var redis = require("redis");
-//var room = require('./room');
+// var redis = require("redis");
 var building = require("./building");
 
 app.use('/', express.static(path.join(__dirname, 'static')));
+// var redisCx = redis.createClient();
 
-var redisCx = redis.createClient();
 
 
 var buildingState = building.initialState();
@@ -20,9 +19,17 @@ io.on('connection', function(socket){
 
   socket.on("command", function (command) {
     command.client = socket.id;
-    buildingState = building.consume(command, buildingState);
-    console.log(buildingState)
+    var events = [];
+    buildingState = building.consume(command, events, buildingState);
+    // ToDo: process events
+    console.log(events);
+    // console.dir(JSON.stringify(buildingState))
   });
+
+  //socket.on("pubsub", function (command) {
+  //  command.client = socket;
+  //
+  //});
 });
 
 http.listen(3000, function(){

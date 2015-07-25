@@ -2,14 +2,18 @@ var _ = require('lodash');
 var room = require("./room");
 
 function initialState () {
-  return [room.initialState("kitchen"), room.initialState("livingroom")];
+  return {
+    rooms: [room.initialState("kitchen"), room.initialState("livingroom")]
+  };
 }
 
-function consume (action, state) {
+function consume (action, events, state) {
   switch(action.type) {
     default:
-      return _.map(state, _.curry(room.consume)(action));
-      break
+      return _.extend({}, state, {
+        rooms: _.map(state.rooms, _.curry(room.consume)(action, events))
+      });
+      break;
   }
 }
 
