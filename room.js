@@ -37,11 +37,20 @@ function consume (action, events, state) {
       break;
 
     case 'join-room':
+      if (action.roomId === state.id) {
 
-      return _.extend({}, state, {
-        clients: state.clients.concat(action.client)
-      });
-      break;
+        events.push({
+          target: "browser",
+          client: action.client,
+          name: "message-list",
+          roomId: action.roomId
+        });
+
+        return _.extend({}, state, {
+          clients: state.clients.concat(action.client)
+        });
+        break;
+      }
 
     default:
       return state;

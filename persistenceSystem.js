@@ -2,8 +2,8 @@ var _ = require("lodash");
 var redis = require("redis");
 var Promise = require("bluebird");
 
-function PersistenceSystem () {
-  this.redisCx = redis.createClient();
+function PersistenceSystem (redisCx) {
+  this.redisCx = redisCx;
 }
 
 PersistenceSystem.prototype.processing = function (events) {
@@ -30,11 +30,9 @@ PersistenceSystem.prototype.processing = function (events) {
   }.bind(this));
 }
 
-
-function create () {
-  return new PersistenceSystem();
+function create (redisCx) {
+  return new PersistenceSystem(redisCx);
 }
-
 
 module.exports = {
   create: create,

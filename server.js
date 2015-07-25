@@ -6,13 +6,16 @@ var io = require('socket.io')(http);
 var building = require("./building");
 var BrowserSystem = require('./browserSystem');
 var PersistenceSystem = require("./persistenceSystem");
+var redis = require("redis");
 var _ = require('lodash');
 var Promise = require("bluebird");
 
 app.use('/', express.static(path.join(__dirname, 'static')));
 
-var browserSystem = BrowserSystem.create();
-var persistenceSystem = PersistenceSystem.create();
+var redisCx = redis.createClient();
+
+var browserSystem = BrowserSystem.create(redisCx);
+var persistenceSystem = PersistenceSystem.create(redisCx);
 
 var systems = [ browserSystem, persistenceSystem ]
 
