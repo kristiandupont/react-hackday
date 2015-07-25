@@ -3,10 +3,14 @@ var path = require("path");
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var redis = require("redis");
 //var room = require('./room');
 var building = require("./building");
 
 app.use('/', express.static(path.join(__dirname, 'static')));
+
+var redisCx = redis.createClient();
+
 
 var buildingState = building.initialState();
 //var roomState = room.initialState();
