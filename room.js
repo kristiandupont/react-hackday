@@ -14,7 +14,7 @@ function consume (action, events, state) {
       if (action.roomId === state.id) {
 
         events.push({
-          type: 'client',
+          target: 'browser',
           clients: _.difference(state.clients, [action.client]),
           name: 'message',
           message: action.message

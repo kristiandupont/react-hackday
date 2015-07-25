@@ -6,6 +6,9 @@
   <script type="text/jsx" src="app.jsx"></script>
   <script>
     window.socket = io();
+    window.socket.on('message', function (event) {
+      console.log(event);
+    })
   </script>
 
 <body>

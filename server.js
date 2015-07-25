@@ -5,22 +5,32 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 // var redis = require("redis");
 var building = require("./building");
+var BrowserSystem = require('./browserSystem');
+var _ = require('lodash');
 
 app.use('/', express.static(path.join(__dirname, 'static')));
 // var redisCx = redis.createClient();
 
+var browserSystem = BrowserSystem.create();
+
+var systems = [ browserSystem ]
 
 
 var buildingState = building.initialState();
 //var roomState = room.initialState();
 
 io.on('connection', function(socket){
+  browserSystem.addBrowser(socket);
+  // clients[socket.id] = socket;
   console.log('a user connected');
 
   socket.on("command", function (command) {
     command.client = socket.id;
     var events = [];
     buildingState = building.consume(command, events, buildingState);
+
+    _.each(systems, function (system) { system.process(events); })
+
     // ToDo: process events
     console.log(events);
     // console.dir(JSON.stringify(buildingState))
